@@ -1,0 +1,69 @@
+<!--
+## index.html
+## Author: Cathal Redmond using Chat GPT Prompt: "Please create for me a client-side application that will interact with an API that performs CRUD operations on books. Use jQuery AJAX for the API calls. Put the HTML, CSS, and Javascript in separate files"
+## Date: 2026-May-07
+-->>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Manager</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Book Manager</h1>
+
+        <!-- Book Form -->
+        <form id="bookForm">
+            <input type="hidden" id="bookId">
+
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="title" required>
+            </div>
+
+            <div class="form-group">
+                <label>Author</label>
+                <input type="text" id="author" required>
+            </div>
+
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" id="price" step="0.01" required>
+            </div>
+
+            <button type="submit" id="saveBtn">Save Book</button>
+            <button type="button" id="clearBtn">Clear</button>
+        </form>
+
+        <hr>
+
+        <!-- Books Table -->
+        <table id="booksTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
