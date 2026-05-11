@@ -9,7 +9,7 @@ import sqlite3
 from bookDAO import BookDAO
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 dao = BookDAO()
 
