@@ -7,7 +7,7 @@ class BookDAO:
 
     def __init__(self):
         # Path to SQLite database file
-        self.database = "books.db"
+        self.database = "bookdb.sqlite"
 
     # -------------------------
     # Database Connection
