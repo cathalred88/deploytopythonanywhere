@@ -1,14 +1,18 @@
 import sqlite3
-import dbconfig as cfg
-database = cfg["database"]
 
-con = sqlite3.connect(database)
-cur = con.cursor() 
-with open ("schema.sql", "r") as fp:
-    sql = fp.read()
+conn = sqlite3.connect("bookdb.sqlite")
+cursor = conn.cursor()
 
-cur.executescript(sql)
-con.commit()
-con.close()
-print ("Database schema created successfully")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    price REAL NOT NULL
+)
+""")
 
+conn.commit()
+conn.close()
+
+print("Database schema created successfully.")
