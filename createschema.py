@@ -4,7 +4,7 @@ conn = sqlite3.connect("bookdb.sqlite")
 cursor = conn.cursor()
 
 cursor.execute("""
-CREATE TABLE IF NOT EXISTS books (
+CREATE TABLE IF NOT EXISTS bookdb (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
