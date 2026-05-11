@@ -1,107 +1,110 @@
-## restServer.py
+## server.py
 ## Author Cathal Redmond
-## Data 05 May 2026
-# This is the main REST server file for the big project for Web services and Applications coursework.
+## Web Services & Applications - Big Project
+## SQLite Version
 
-# imports
-from flask import Flask, request, jsonify, abort, render_template
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+import sqlite3
 from bookDAO import BookDAO
 
-# Create Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Create DAO instance
-book_dao = BookDAO()
+dao = BookDAO()
 
 
-# -------------------------
-# Welcome Route
-# -------------------------
-@app.route('/')
+# -------------------------------------
+# Create Database & Table if Missing
+# -------------------------------------
+def init_db():
+    conn = sqlite3.connect("bookdb.sqlite")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS books (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        author TEXT NOT NULL,
+        price REAL NOT NULL
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+init_db()
+
+
+# -------------------------------------
+# Serve Frontend
+# -------------------------------------
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-# -------------------------
-# GET All Books
-# -------------------------
-@app.route('/books', methods=['GET'])
+# -------------------------------------
+# API ROUTES
+# -------------------------------------
+
+# GET all books
+@app.route("/books", methods=["GET"])
 def getAll():
-    return jsonify(book_dao.getAll())
+    return jsonify(dao.getAll())
 
 
-# -------------------------
-# GET Book By ID
-# -------------------------
-@app.route('/books/<int:id>', methods=['GET'])
-def findByID(id):
-    book = book_dao.findByID(id)
+# GET book by ID
+@app.route("/books/<int:id>", methods=["GET"])
+def findById(id):
+    book = dao.findByID(id)
     if book is None:
-        abort(404, description="Book not found")
+        return jsonify({"error": "Book not found"}), 404
     return jsonify(book)
 
 
-# -------------------------
-# CREATE Book
-# -------------------------
-@app.route('/books', methods=['POST'])
+# CREATE book
+@app.route("/books", methods=["POST"])
 def create():
-    if not request.json:
-        abort(400, description="Request must be JSON")
+    book = request.json
 
-    required_fields = ["title", "author", "price"]
+    if not book:
+        return jsonify({"error": "Invalid input"}), 400
 
-    for field in required_fields:
-        if field not in request.json:
-            abort(400, description=f"{field} is required")
+    if "title" not in book or "author" not in book or "price" not in book:
+        return jsonify({"error": "Missing required fields"}), 400
 
-    book = {
-        "title": request.json["title"],
-        "author": request.json["author"],
-        "price": request.json["price"]
-    }
-
-    created_book = book_dao.create(book)
-    return jsonify(created_book), 201
+    return jsonify(dao.create(book)), 201
 
 
-# -------------------------
-# UPDATE Book
-# -------------------------
-@app.route('/books/<int:id>', methods=['PUT'])
+# UPDATE book
+@app.route("/books/<int:id>", methods=["PUT"])
 def update(id):
-    book = book_dao.findByID(id)
-    if book is None:
-        abort(404, description="Book not found")
+    book = request.json
 
-    if not request.json:
-        abort(400, description="Request must be JSON")
+    if not book:
+        return jsonify({"error": "Invalid input"}), 400
 
-    updatedBook = {
-        "title": request.json.get("title", book["title"]),
-        "author": request.json.get("author", book["author"]),
-        "price": request.json.get("price", book["price"])
-    }
+    existing = dao.findByID(id)
+    if existing is None:
+        return jsonify({"error": "Book not found"}), 404
 
-    result = book_dao.update(id, updatedBook)
-    return jsonify(result)
+    return jsonify(dao.update(id, book))
 
 
-# -------------------------
-# DELETE Book
-# -------------------------
-@app.route('/books/<int:id>', methods=['DELETE'])
+# DELETE book
+@app.route("/books/<int:id>", methods=["DELETE"])
 def delete(id):
-    result = book_dao.delete(id)
-    if result is None:
-        abort(404, description="Book not found")
-    return jsonify({"message": "Book deleted"})
+    existing = dao.findByID(id)
+    if existing is None:
+        return jsonify({"error": "Book not found"}), 404
+
+    return jsonify(dao.delete(id))
 
 
-# -------------------------
-# Run Server
-# -------------------------
-if __name__ == '__main__':
+# -------------------------------------
+# Run Locally
+# -------------------------------------
+if __name__ == "__main__":
     app.run(debug=True)

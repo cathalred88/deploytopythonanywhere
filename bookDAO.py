@@ -7,7 +7,7 @@
 # renamed from test.py to bookDAO.py on 06 May 2026to better reflect its purpose as a data access object for the books in the REST API.
 
 # imports
-import mysql.connector
+import sqlite3
 
 class BookDAO:
 
