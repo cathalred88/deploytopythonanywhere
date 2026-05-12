@@ -44,6 +44,7 @@ The project was originally built as a book database and was later adapted into a
 ## Project Structure
 
 
+```text
 deploytopythionanywhere/
 │
 ├── server.py
@@ -63,7 +64,7 @@ deploytopythionanywhere/
     │
     └── js/
         └── app.js
-
+```
 
 ## Database
 
