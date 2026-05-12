@@ -4,11 +4,16 @@
 
 
 
+
 const API_URL = "/boardgames";
 
 let games = [];
 let sortColumn = null;
 let sortDirection = "asc";
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadGames();
+});
 
 async function loadGames() {
     const players = document.getElementById("playersInput").value;
@@ -30,14 +35,10 @@ async function loadGames() {
         url += "?" + params.toString();
     }
 
-    try {
-        const response = await fetch(url);
-        games = await response.json();
-        displayGames(games);
-    } catch (error) {
-        console.error("Error loading games:", error);
-        alert("Could not load board games.");
-    }
+    const response = await fetch(url);
+    games = await response.json();
+
+    displayGames(games);
 }
 
 function displayGames(gameList) {
@@ -45,7 +46,7 @@ function displayGames(gameList) {
     tbody.innerHTML = "";
 
     if (!gameList || gameList.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='7'>No board games found</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='8'>No games found</td></tr>";
         return;
     }
 
@@ -59,9 +60,10 @@ function displayGames(gameList) {
             <td>${game.min_players ?? ""}</td>
             <td>${game.max_players ?? ""}</td>
             <td>${game.playtime ?? ""}</td>
+            <td>${game.category ?? ""}</td>
             <td>
-                <button onclick="editGame(${game.id})">Edit</button>
-                <button onclick="deleteGame(${game.id})" class="danger">Delete</button>
+                <button type="button" onclick="editGame(${game.id})">Edit</button>
+                <button type="button" class="danger" onclick="deleteGame(${game.id})">Delete</button>
             </td>
         `;
 
@@ -74,10 +76,11 @@ async function saveGame() {
 
     const game = {
         name: document.getElementById("name").value,
-        year_published: Number(document.getElementById("year_published").value),
-        min_players: Number(document.getElementById("min_players").value),
-        max_players: Number(document.getElementById("max_players").value),
-        playtime: Number(document.getElementById("playtime").value)
+        year_published: parseInt(document.getElementById("year_published").value),
+        min_players: parseInt(document.getElementById("min_players").value),
+        max_players: parseInt(document.getElementById("max_players").value),
+        playtime: parseInt(document.getElementById("playtime").value),
+        category: document.getElementById("category").value
     };
 
     if (!game.name) {
@@ -85,28 +88,25 @@ async function saveGame() {
         return;
     }
 
-    const method = id ? "PUT" : "POST";
     const url = id ? `${API_URL}/${id}` : API_URL;
+    const method = id ? "PUT" : "POST";
 
-    try {
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(game)
-        });
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(game)
+    });
 
-        if (!response.ok) {
-            throw new Error("Save failed");
-        }
-
-        clearForm();
-        loadGames();
-    } catch (error) {
-        console.error("Error saving game:", error);
-        alert("Could not save board game.");
+    if (!response.ok) {
+        alert("Save failed.");
+        console.error(await response.text());
+        return;
     }
+
+    clearForm();
+    loadGames();
 }
 
 function editGame(id) {
@@ -119,33 +119,30 @@ function editGame(id) {
 
     document.getElementById("gameId").value = game.id;
     document.getElementById("name").value = game.name;
-    document.getElementById("year_published").value = game.year_published;
-    document.getElementById("min_players").value = game.min_players;
-    document.getElementById("max_players").value = game.max_players;
-    document.getElementById("playtime").value = game.playtime;
+    document.getElementById("year_published").value = game.year_published ?? "";
+    document.getElementById("min_players").value = game.min_players ?? "";
+    document.getElementById("max_players").value = game.max_players ?? "";
+    document.getElementById("playtime").value = game.playtime ?? "";
+    document.getElementById("category").value = game.category ?? "";
 
     document.getElementById("formTitle").textContent = "Update Board Game";
 }
 
 async function deleteGame(id) {
-    if (!confirm("Are you sure you want to delete this board game?")) {
+    if (!confirm("Delete this board game?")) {
         return;
     }
 
-    try {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
-        });
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
 
-        if (!response.ok) {
-            throw new Error("Delete failed");
-        }
-
-        loadGames();
-    } catch (error) {
-        console.error("Error deleting game:", error);
-        alert("Could not delete board game.");
+    if (!response.ok) {
+        alert("Delete failed.");
+        return;
     }
+
+    loadGames();
 }
 
 function clearForm() {
@@ -155,6 +152,7 @@ function clearForm() {
     document.getElementById("min_players").value = "";
     document.getElementById("max_players").value = "";
     document.getElementById("playtime").value = "";
+    document.getElementById("category").value = "";
 
     document.getElementById("formTitle").textContent = "Add New Board Game";
 }
@@ -177,6 +175,9 @@ function sortTable(column) {
         let valueA = a[column];
         let valueB = b[column];
 
+        if (valueA === null || valueA === undefined) valueA = "";
+        if (valueB === null || valueB === undefined) valueB = "";
+
         if (typeof valueA === "string") {
             valueA = valueA.toLowerCase();
             valueB = valueB.toLowerCase();
@@ -195,5 +196,3 @@ function sortTable(column) {
 
     displayGames(sortedGames);
 }
-
-window.onload = loadGames;

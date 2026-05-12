@@ -5,16 +5,21 @@
 -->
 
 
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Board Game Database</title>
-    <link rel="stylesheet" href="/static/styles.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <body>
 
 <div class="container">
+
     <h1>🎲 Board Game Database</h1>
 
     <section class="form-section">
@@ -23,16 +28,17 @@
         <input type="hidden" id="gameId">
 
         <div class="form-grid">
-            <input type="text" id="name" placeholder="Game name">
-            <input type="number" id="year_published" placeholder="Year published">
-            <input type="number" id="min_players" placeholder="Min players">
-            <input type="number" id="max_players" placeholder="Max players">
+            <input type="text" id="name" placeholder="Game Name">
+            <input type="number" id="year_published" placeholder="Year Published">
+            <input type="number" id="min_players" placeholder="Min Players">
+            <input type="number" id="max_players" placeholder="Max Players">
             <input type="number" id="playtime" placeholder="Playtime mins">
+            <input type="text" id="category" placeholder="Category">
         </div>
 
         <div class="button-row">
-            <button onclick="saveGame()">Save Game</button>
-            <button onclick="clearForm()" class="secondary">Clear</button>
+            <button type="button" onclick="saveGame()">Save Game</button>
+            <button type="button" class="secondary" onclick="clearForm()">Clear</button>
         </div>
     </section>
 
@@ -42,26 +48,30 @@
         <input type="number" id="playersInput" placeholder="Players e.g. 4">
         <input type="number" id="playtimeInput" placeholder="Max playtime e.g. 30">
 
-        <button onclick="loadGames()">Apply Filters</button>
-        <button onclick="clearFilters()" class="secondary">Clear Filters</button>
+        <button type="button" onclick="loadGames()">Apply Filters</button>
+        <button type="button" class="secondary" onclick="clearFilters()">Clear Filters</button>
     </section>
 
     <table>
         <thead>
-            <tr>
-                <th onclick="sortTable('id')">ID ⬍</th>
-                <th onclick="sortTable('name')">Name ⬍</th>
-                <th onclick="sortTable('year_published')">Year ⬍</th>
-                <th onclick="sortTable('min_players')">Min Players ⬍</th>
-                <th onclick="sortTable('max_players')">Max Players ⬍</th>
-                <th onclick="sortTable('playtime')">Playtime ⬍</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th onclick="sortTable('id')">ID ↕</th>
+            <th onclick="sortTable('name')">Name ↕</th>
+            <th onclick="sortTable('year_published')">Year ↕</th>
+            <th onclick="sortTable('min_players')">Min Players ↕</th>
+            <th onclick="sortTable('max_players')">Max Players ↕</th>
+            <th onclick="sortTable('playtime')">Playtime ↕</th>
+            <th onclick="sortTable('category')">Category ↕</th>
+            <th>Actions</th>
+        </tr>
         </thead>
+
         <tbody id="gamesBody"></tbody>
     </table>
+
 </div>
 
-<script src="/static/app.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
 </body>
 </html>

@@ -1,13 +1,12 @@
 import sqlite3
 
-# Connect to boardgames database
 conn = sqlite3.connect("boardgames.sqlite")
 cursor = conn.cursor()
 
-# Drop table if it exists 
+# Delete old table during development
 cursor.execute("DROP TABLE IF EXISTS boardgames")
 
-# Create boardgames table
+# Create updated table
 cursor.execute("""
 CREATE TABLE boardgames (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,7 +15,8 @@ CREATE TABLE boardgames (
     year_published INTEGER,
     min_players INTEGER,
     max_players INTEGER,
-    playtime INTEGER
+    playtime INTEGER,
+    category TEXT
 )
 """)
 

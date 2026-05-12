@@ -3,6 +3,13 @@
 ## Web Services & Applications - Big Project
 ## Board Game Database - SQLite Version
 
+
+
+## server.py
+## Author: Cathal Redmond
+## Web Services & Applications - Big Project
+## Board Game Database - SQLite Version
+
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import sqlite3
@@ -14,9 +21,6 @@ CORS(app, supports_credentials=True)
 dao = boardgameDAO()
 
 
-# -------------------------------------
-# Create Database & Table if Missing
-# -------------------------------------
 def init_db():
     conn = sqlite3.connect("boardgames.sqlite")
     cursor = conn.cursor()
@@ -41,19 +45,11 @@ def init_db():
 init_db()
 
 
-# -------------------------------------
-# Serve Frontend
-# -------------------------------------
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-# -------------------------------------
-# API ROUTES
-# -------------------------------------
-
-# GET all board games, with optional filters
 @app.route("/boardgames", methods=["GET"])
 def get_all_games():
     min_players = request.args.get("min_players", type=int)
@@ -67,7 +63,6 @@ def get_all_games():
     return jsonify(games)
 
 
-# GET board game by ID
 @app.route("/boardgames/<int:id>", methods=["GET"])
 def find_by_id(id):
     boardgame = dao.findByID(id)
@@ -78,7 +73,6 @@ def find_by_id(id):
     return jsonify(boardgame)
 
 
-# CREATE board game
 @app.route("/boardgames", methods=["POST"])
 def create():
     boardgame = request.json
@@ -92,7 +86,6 @@ def create():
     return jsonify(dao.create(boardgame)), 201
 
 
-# UPDATE board game
 @app.route("/boardgames/<int:id>", methods=["PUT"])
 def update(id):
     boardgame = request.json
@@ -108,7 +101,6 @@ def update(id):
     return jsonify(dao.update(id, boardgame))
 
 
-# DELETE board game
 @app.route("/boardgames/<int:id>", methods=["DELETE"])
 def delete(id):
     existing = dao.findByID(id)
@@ -119,8 +111,5 @@ def delete(id):
     return jsonify(dao.delete(id))
 
 
-# -------------------------------------
-# Run Locally
-# -------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
