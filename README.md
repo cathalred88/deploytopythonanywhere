@@ -86,13 +86,16 @@ CREATE TABLE boardgames (
 );
 
 ## API Endpoints
-Method	Endpoint	Description
-GET	/boardgames	Get all board games
-GET	/boardgames/<id>	Get a board game by ID
-POST	/boardgames	Create a new board game
-PUT	/boardgames/<id>	Update an existing board game
-DELETE	/boardgames/<id>	Delete a board game
-Filtering
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/boardgames` | Get all board games |
+| GET | `/boardgames/<id>` | Get a board game by ID |
+| POST | `/boardgames` | Create a new board game |
+| PUT | `/boardgames/<id>` | Update an existing board game |
+| DELETE | `/boardgames/<id>` | Delete a board game |
+
+## Filtering
 
 The API supports filtering by player count and maximum playtime.
 
