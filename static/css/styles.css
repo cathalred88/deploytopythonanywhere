@@ -2,11 +2,9 @@
 Author: Cathal Redmond using Chat GPT Prompt: "Please create for me a client-side application that will interact with an API that performs CRUD operations on books. Use jQuery AJAX for the API calls. Put the HTML, CSS, and Javascript in separate files"
 Date: 2026-May-07 */
 
-
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f6f9;
+    background-color: #f4f6f8;
     margin: 0;
     padding: 0;
 }
@@ -15,38 +13,41 @@ body {
     width: 80%;
     margin: 40px auto;
     background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 h1 {
     text-align: center;
+    margin-bottom: 30px;
 }
 
-form {
+.filters {
+    display: flex;
+    gap: 15px;
     margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.form-group {
-    margin-bottom: 10px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-}
-
-input {
-    width: 100%;
+.filters input {
     padding: 6px;
-    margin-top: 4px;
+    width: 120px;
 }
 
-button {
-    padding: 8px 12px;
-    margin-right: 5px;
+.filters button {
+    padding: 8px 15px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
     cursor: pointer;
+}
+
+.filters button:hover {
+    background-color: #0056b3;
 }
 
 table {
@@ -54,22 +55,17 @@ table {
     border-collapse: collapse;
 }
 
-table th, table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-table th {
-    background-color: #007bff;
+thead {
+    background-color: #007BFF;
     color: white;
 }
 
-.action-btn {
-    margin-right: 5px;
-    cursor: pointer;
-    color: blue;
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
 }
 
-.delete-btn {
-    color: red;
+tr:nth-child(even) {
+    background-color: #f2f2f2;
 }

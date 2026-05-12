@@ -4,66 +4,48 @@
 ## Date: 2026-May-07
 -->>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Book Manager</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>Board Game Finder</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
 
     <div class="container">
-        <h1>Book Manager</h1>
+        <h1>🎲 Board Game Finder</h1>
 
-        <!-- Book Form -->
-        <form id="bookForm">
-            <input type="hidden" id="bookId">
+        <div class="filters">
+            <label>
+                Players:
+                <input type="number" id="playersInput" placeholder="e.g. 4">
+            </label>
 
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="title" required>
-            </div>
+            <label>
+                Max Playtime (mins):
+                <input type="number" id="playtimeInput" placeholder="e.g. 30">
+            </label>
 
-            <div class="form-group">
-                <label>Author</label>
-                <input type="text" id="author" required>
-            </div>
+            <button onclick="loadGames()">Search</button>
+            <button onclick="clearFilters()">Clear</button>
+        </div>
 
-            <div class="form-group">
-                <label>Price</label>
-                <input type="number" id="price" step="0.01" required>
-            </div>
-
-            <button type="submit" id="saveBtn">Save Book</button>
-            <button type="button" id="clearBtn">Clear</button>
-        </form>
-
-        <hr>
-
-        <!-- Books Table -->
-        <table id="booksTable">
+        <table id="gamesTable">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Price</th>
-                    <th>Actions</th>
+                    <th>Name</th>
+                    <th>Year</th>
+                    <th>Players</th>
+                    <th>Playtime</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Data will be inserted here -->
+            <tbody id="gamesBody">
+                <!-- Games will load here -->
             </tbody>
         </table>
     </div>
 
-    <!-- JS -->
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="/static/app.js"></script>
 </body>
 </html>
