@@ -4,48 +4,64 @@
 ## Date: 2026-May-07
 -->>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Board Game Finder</title>
+    <title>Board Game Database</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
 
-    <div class="container">
-        <h1>🎲 Board Game Finder</h1>
+<div class="container">
+    <h1>🎲 Board Game Database</h1>
 
-        <div class="filters">
-            <label>
-                Players:
-                <input type="number" id="playersInput" placeholder="e.g. 4">
-            </label>
+    <section class="form-section">
+        <h2 id="formTitle">Add New Board Game</h2>
 
-            <label>
-                Max Playtime (mins):
-                <input type="number" id="playtimeInput" placeholder="e.g. 30">
-            </label>
+        <input type="hidden" id="gameId">
 
-            <button onclick="loadGames()">Search</button>
-            <button onclick="clearFilters()">Clear</button>
+        <div class="form-grid">
+            <input type="text" id="name" placeholder="Game name">
+            <input type="number" id="year_published" placeholder="Year published">
+            <input type="number" id="min_players" placeholder="Min players">
+            <input type="number" id="max_players" placeholder="Max players">
+            <input type="number" id="playtime" placeholder="Playtime mins">
         </div>
 
-        <table id="gamesTable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Year</th>
-                    <th>Players</th>
-                    <th>Playtime</th>
-                </tr>
-            </thead>
-            <tbody id="gamesBody">
-                <!-- Games will load here -->
-            </tbody>
-        </table>
-    </div>
+        <div class="button-row">
+            <button onclick="saveGame()">Save Game</button>
+            <button onclick="clearForm()" class="secondary">Clear</button>
+        </div>
+    </section>
 
-    <script src="/static/app.js"></script>
+    <section class="filter-section">
+        <h2>Filter Games</h2>
+
+        <input type="number" id="playersInput" placeholder="Players e.g. 4">
+        <input type="number" id="playtimeInput" placeholder="Max playtime e.g. 30">
+
+        <button onclick="loadGames()">Apply Filters</button>
+        <button onclick="clearFilters()" class="secondary">Clear Filters</button>
+    </section>
+
+    <table>
+        <thead>
+            <tr>
+                <th onclick="sortTable('id')">ID ⬍</th>
+                <th onclick="sortTable('name')">Name ⬍</th>
+                <th onclick="sortTable('year_published')">Year ⬍</th>
+                <th onclick="sortTable('min_players')">Min Players ⬍</th>
+                <th onclick="sortTable('max_players')">Max Players ⬍</th>
+                <th onclick="sortTable('playtime')">Playtime ⬍</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="gamesBody"></tbody>
+    </table>
+</div>
+
+<script src="/static/app.js"></script>
 </body>
 </html>

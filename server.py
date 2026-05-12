@@ -1,7 +1,7 @@
 ## server.py
-## Author Cathal Redmond
+## Author: Cathal Redmond
 ## Web Services & Applications - Big Project
-## SQLite Version
+## Board Game Database - SQLite Version
 
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
@@ -24,7 +24,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS boardgames (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        bgg_id INTEGER,
+        bgg_id INTEGER UNIQUE,
         name TEXT NOT NULL,
         year_published INTEGER,
         min_players INTEGER,
@@ -53,18 +53,28 @@ def index():
 # API ROUTES
 # -------------------------------------
 
-# GET all board games
+# GET all board games, with optional filters
 @app.route("/boardgames", methods=["GET"])
-def getAll():
-    return jsonify(dao.getAll())
+def get_all_games():
+    min_players = request.args.get("min_players", type=int)
+    max_playtime = request.args.get("max_playtime", type=int)
+
+    games = dao.getAll(
+        min_players=min_players,
+        max_playtime=max_playtime
+    )
+
+    return jsonify(games)
 
 
 # GET board game by ID
 @app.route("/boardgames/<int:id>", methods=["GET"])
-def findById(id):
+def find_by_id(id):
     boardgame = dao.findByID(id)
+
     if boardgame is None:
         return jsonify({"error": "Board game not found"}), 404
+
     return jsonify(boardgame)
 
 
@@ -76,8 +86,8 @@ def create():
     if not boardgame:
         return jsonify({"error": "Invalid input"}), 400
 
-    if "name" not in boardgame:
-        return jsonify({"error": "Missing required fields"}), 400
+    if "name" not in boardgame or boardgame["name"].strip() == "":
+        return jsonify({"error": "Missing required field: name"}), 400
 
     return jsonify(dao.create(boardgame)), 201
 
@@ -91,6 +101,7 @@ def update(id):
         return jsonify({"error": "Invalid input"}), 400
 
     existing = dao.findByID(id)
+
     if existing is None:
         return jsonify({"error": "Board game not found"}), 404
 
@@ -101,22 +112,12 @@ def update(id):
 @app.route("/boardgames/<int:id>", methods=["DELETE"])
 def delete(id):
     existing = dao.findByID(id)
+
     if existing is None:
         return jsonify({"error": "Board game not found"}), 404
 
     return jsonify(dao.delete(id))
 
-
-# FILTER board games by min_players and max_playtime
-@app.route('/boardgames', methods=['GET'])
-def get_all_games():
-
-    # Get query parameters from URL
-    min_players = request.args.get('min_players', type=int)
-    max_playtime = request.args.get('max_playtime', type=int)
-
-    games = dao.getAll(min_players=min_players, max_playtime=max_playtime)
-    return jsonify(games)
 
 # -------------------------------------
 # Run Locally

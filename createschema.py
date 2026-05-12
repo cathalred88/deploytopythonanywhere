@@ -1,18 +1,26 @@
 import sqlite3
 
-conn = sqlite3.connect("bookdb.sqlite")
+# Connect to boardgames database
+conn = sqlite3.connect("boardgames.sqlite")
 cursor = conn.cursor()
 
+# Drop table if it exists 
+cursor.execute("DROP TABLE IF EXISTS boardgames")
+
+# Create boardgames table
 cursor.execute("""
-CREATE TABLE IF NOT EXISTS bookdb (
+CREATE TABLE boardgames (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    price REAL NOT NULL
+    bgg_id INTEGER UNIQUE,
+    name TEXT NOT NULL,
+    year_published INTEGER,
+    min_players INTEGER,
+    max_players INTEGER,
+    playtime INTEGER
 )
 """)
 
 conn.commit()
 conn.close()
 
-print("Database schema created successfully.")
+print("Boardgames database schema created successfully.")

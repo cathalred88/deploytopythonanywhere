@@ -7,13 +7,13 @@ class boardgameDAO:
 
     def __init__(self):
         # Path to SQLite database file
-        self.database = "boardgames.sqlite"
+        self.db = "boardgames.sqlite"
 
     # -------------------------
     # Database Connection
     # -------------------------
     def getConnection(self):
-        connection = sqlite3.connect(self.database)
+        connection = sqlite3.connect(self.db)
         connection.row_factory = sqlite3.Row  # Allows dict-style access
         return connection
 

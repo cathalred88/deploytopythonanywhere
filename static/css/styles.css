@@ -2,52 +2,78 @@
 Author: Cathal Redmond using Chat GPT Prompt: "Please create for me a client-side application that will interact with an API that performs CRUD operations on books. Use jQuery AJAX for the API calls. Put the HTML, CSS, and Javascript in separate files"
 Date: 2026-May-07 */
 
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
+    background: #f4f6f8;
     margin: 0;
     padding: 0;
 }
 
 .container {
-    width: 80%;
+    width: 90%;
     margin: 40px auto;
     background: white;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
-h1 {
+h1, h2 {
     text-align: center;
+}
+
+.form-section,
+.filter-section {
     margin-bottom: 30px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
 }
 
-.filters {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
 }
 
-.filters input {
-    padding: 6px;
-    width: 120px;
+input {
+    padding: 8px;
 }
 
-.filters button {
-    padding: 8px 15px;
+.button-row,
+.filter-section {
+    text-align: center;
+}
+
+button {
+    padding: 8px 14px;
     border: none;
-    background-color: #007BFF;
+    background: #007bff;
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    margin: 5px;
 }
 
-.filters button:hover {
-    background-color: #0056b3;
+button:hover {
+    background: #0056b3;
+}
+
+button.secondary {
+    background: #6c757d;
+}
+
+button.secondary:hover {
+    background: #545b62;
+}
+
+button.danger {
+    background: #dc3545;
+}
+
+button.danger:hover {
+    background: #a71d2a;
 }
 
 table {
@@ -56,16 +82,20 @@ table {
 }
 
 thead {
-    background-color: #007BFF;
+    background: #007bff;
     color: white;
+}
+
+th {
+    cursor: pointer;
 }
 
 th, td {
     padding: 10px;
-    text-align: center;
     border: 1px solid #ddd;
+    text-align: center;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background: #f2f2f2;
 }

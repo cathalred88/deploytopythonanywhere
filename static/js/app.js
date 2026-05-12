@@ -3,14 +3,16 @@
 // Date: 2026-May-07
 
 
+
 const API_URL = "/boardgames";
 
-async function loadGames() {
+let games = [];
+let sortColumn = null;
+let sortDirection = "asc";
 
+async function loadGames() {
     const players = document.getElementById("playersInput").value;
     const playtime = document.getElementById("playtimeInput").value;
-
-    let url = API_URL;
 
     const params = new URLSearchParams();
 
@@ -22,44 +24,139 @@ async function loadGames() {
         params.append("max_playtime", playtime);
     }
 
+    let url = API_URL;
+
     if (params.toString()) {
         url += "?" + params.toString();
     }
 
     try {
         const response = await fetch(url);
-        const games = await response.json();
-
+        games = await response.json();
         displayGames(games);
-
     } catch (error) {
         console.error("Error loading games:", error);
+        alert("Could not load board games.");
     }
 }
 
-function displayGames(games) {
-
+function displayGames(gameList) {
     const tbody = document.getElementById("gamesBody");
     tbody.innerHTML = "";
 
-    if (games.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='4'>No games found</td></tr>";
+    if (!gameList || gameList.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='7'>No board games found</td></tr>";
         return;
     }
 
-    games.forEach(game => {
-
+    gameList.forEach(game => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
+            <td>${game.id}</td>
             <td>${game.name}</td>
-            <td>${game.year_published || "N/A"}</td>
-            <td>${game.min_players} - ${game.max_players}</td>
-            <td>${game.playtime} mins</td>
+            <td>${game.year_published ?? ""}</td>
+            <td>${game.min_players ?? ""}</td>
+            <td>${game.max_players ?? ""}</td>
+            <td>${game.playtime ?? ""}</td>
+            <td>
+                <button onclick="editGame(${game.id})">Edit</button>
+                <button onclick="deleteGame(${game.id})" class="danger">Delete</button>
+            </td>
         `;
 
         tbody.appendChild(row);
     });
+}
+
+async function saveGame() {
+    const id = document.getElementById("gameId").value;
+
+    const game = {
+        name: document.getElementById("name").value,
+        year_published: Number(document.getElementById("year_published").value),
+        min_players: Number(document.getElementById("min_players").value),
+        max_players: Number(document.getElementById("max_players").value),
+        playtime: Number(document.getElementById("playtime").value)
+    };
+
+    if (!game.name) {
+        alert("Please enter a game name.");
+        return;
+    }
+
+    const method = id ? "PUT" : "POST";
+    const url = id ? `${API_URL}/${id}` : API_URL;
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(game)
+        });
+
+        if (!response.ok) {
+            throw new Error("Save failed");
+        }
+
+        clearForm();
+        loadGames();
+    } catch (error) {
+        console.error("Error saving game:", error);
+        alert("Could not save board game.");
+    }
+}
+
+function editGame(id) {
+    const game = games.find(g => g.id === id);
+
+    if (!game) {
+        alert("Game not found.");
+        return;
+    }
+
+    document.getElementById("gameId").value = game.id;
+    document.getElementById("name").value = game.name;
+    document.getElementById("year_published").value = game.year_published;
+    document.getElementById("min_players").value = game.min_players;
+    document.getElementById("max_players").value = game.max_players;
+    document.getElementById("playtime").value = game.playtime;
+
+    document.getElementById("formTitle").textContent = "Update Board Game";
+}
+
+async function deleteGame(id) {
+    if (!confirm("Are you sure you want to delete this board game?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            throw new Error("Delete failed");
+        }
+
+        loadGames();
+    } catch (error) {
+        console.error("Error deleting game:", error);
+        alert("Could not delete board game.");
+    }
+}
+
+function clearForm() {
+    document.getElementById("gameId").value = "";
+    document.getElementById("name").value = "";
+    document.getElementById("year_published").value = "";
+    document.getElementById("min_players").value = "";
+    document.getElementById("max_players").value = "";
+    document.getElementById("playtime").value = "";
+
+    document.getElementById("formTitle").textContent = "Add New Board Game";
 }
 
 function clearFilters() {
@@ -68,5 +165,35 @@ function clearFilters() {
     loadGames();
 }
 
-// Load all games on page load
+function sortTable(column) {
+    if (sortColumn === column) {
+        sortDirection = sortDirection === "asc" ? "desc" : "asc";
+    } else {
+        sortColumn = column;
+        sortDirection = "asc";
+    }
+
+    const sortedGames = [...games].sort((a, b) => {
+        let valueA = a[column];
+        let valueB = b[column];
+
+        if (typeof valueA === "string") {
+            valueA = valueA.toLowerCase();
+            valueB = valueB.toLowerCase();
+        }
+
+        if (valueA < valueB) {
+            return sortDirection === "asc" ? -1 : 1;
+        }
+
+        if (valueA > valueB) {
+            return sortDirection === "asc" ? 1 : -1;
+        }
+
+        return 0;
+    });
+
+    displayGames(sortedGames);
+}
+
 window.onload = loadGames;
