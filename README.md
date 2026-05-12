@@ -73,7 +73,7 @@ The project uses a SQLite database called:
 boardgames.sqlite
 
 The main table is:
-
+```sql
 CREATE TABLE boardgames (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     bgg_id INTEGER UNIQUE,
@@ -84,6 +84,7 @@ CREATE TABLE boardgames (
     playtime INTEGER,
     category TEXT
 );
+```
 
 ## API Endpoints
 
