@@ -6,12 +6,27 @@
 import requests
 import sqlite3
 import xml.etree.ElementTree as ET
+import time
 
 DB = "boardgames.sqlite"
 
 def fetch_hot_games():
     url = "https://boardgamegeek.com/xmlapi2/hot?type=boardgame"
-    response = requests.get(url)
+
+    headers = {
+        "User-Agent": "BoardGameApp/1.0"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    # Handle BGG 202 response
+    while response.status_code == 202:
+        print("BGG processing request... waiting 5 seconds")
+        time.sleep(5)
+        response = requests.get(url, headers=headers)
+
+    response.raise_for_status()
+
     return response.text
 
 def parse_and_store(xml_data):
