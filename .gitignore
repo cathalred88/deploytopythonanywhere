@@ -1,1 +1,40 @@
 #gitignore 
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# SQLite databases
+*.sqlite
+*.db
+*.sqlite3
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment/config files
+.env
+.env.*
+*.env
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# PythonAnywhere / local deployment clutter
+*.bak
+*.tmp
