@@ -2,7 +2,6 @@
 ## Author Cathal Redmond
 ## Date 12 May 2026
 ## This script imports board game data from a xml file on a website calledboardgamegeek.com into the SQLite database.`
-
 import requests
 import sqlite3
 import xml.etree.ElementTree as ET
@@ -19,7 +18,7 @@ def fetch_hot_games():
 
     response = requests.get(url, headers=headers)
 
-    # Handle BGG 202 response
+    # Handle BGG 202 queued response
     while response.status_code == 202:
         print("BGG processing request... waiting 5 seconds")
         time.sleep(5)
@@ -29,7 +28,15 @@ def fetch_hot_games():
 
     return response.text
 
+
 def parse_and_store(xml_data):
+
+    # ✅ DEFENSIVE CHECK GOES HERE
+    if not xml_data.strip().startswith("<"):
+        print("Response was not valid XML!")
+        print(xml_data[:500])
+        return
+
     conn = sqlite3.connect(DB)
     cursor = conn.cursor()
 
@@ -38,8 +45,8 @@ def parse_and_store(xml_data):
     for item in root.findall("item"):
         bgg_id = item.attrib["id"]
         name = item.find("name").attrib["value"]
-        year = item.find("yearpublished")
 
+        year = item.find("yearpublished")
         year_val = year.attrib["value"] if year is not None else None
 
         cursor.execute("""
@@ -49,6 +56,7 @@ def parse_and_store(xml_data):
 
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     xml_data = fetch_hot_games()
