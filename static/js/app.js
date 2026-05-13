@@ -196,3 +196,20 @@ function sortTable(column) {
 
     displayGames(sortedGames);
 }
+
+async function importBoardGames() {
+    const response = await fetch("/import-boardgames", {
+        method: "POST"
+    });
+
+    if (!response.ok) {
+        alert("Import failed.");
+        console.error(await response.text());
+        return;
+    }
+
+    const result = await response.json();
+    alert(result.message);
+
+    loadGames();
+}

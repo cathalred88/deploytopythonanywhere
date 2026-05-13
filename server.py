@@ -111,5 +111,16 @@ def delete(id):
     return jsonify(dao.delete(id))
 
 
+
+@app.route("/import-boardgames", methods=["POST"])
+def import_boardgames_route():
+    from import_boardgames import import_boardgames
+
+    count = import_boardgames(batch_size=10)
+
+    return jsonify({
+        "message": f"{count} new board games imported."
+    })
+
 if __name__ == "__main__":
     app.run(debug=True)
